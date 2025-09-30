@@ -12,5 +12,10 @@ public interface IFuncion {
 	public IFuncion parpadear();
 	
 	public FuncionStatus getStatus();
+	
+	// Ejercicio 4: Capacidad habilitar/deshabilitar función
+	public boolean isHabilitada();
+	public IFuncion habilitar();
+	public IFuncion deshabilitar();
 
 }

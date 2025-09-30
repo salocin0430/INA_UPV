@@ -27,8 +27,7 @@ public class Dispositivo_Recurso extends Recurso {
 		
 		try {
 			jsonResult.put("id", dispositivo.getId());
-			// TODO: Añadir propiedad "habilitado" en el Ejercicio 4
-			// jsonResult.put("habilitado", dispositivo.isHabilitado());
+			jsonResult.put("habilitado", dispositivo.isHabilitado());
 
 			if ( dispositivo.getFunciones() != null ) {
 				JSONArray arrayFunciones = new JSONArray();

@@ -7,6 +7,7 @@ import dispositivo.utils.MySimpleLogger;
 public class Funcion implements IFuncion {
 	
 	protected String id = null;
+	protected boolean habilitada = true; // Por defecto habilitada
 
 	protected FuncionStatus initialStatus = null;
 	protected FuncionStatus status = null;
@@ -34,7 +35,10 @@ public class Funcion implements IFuncion {
 		
 	@Override
 	public IFuncion encender() {
-
+		if (!this.habilitada) {
+			MySimpleLogger.warn(this.loggerId, "==> No se puede encender: función deshabilitada");
+			return this;
+		}
 		MySimpleLogger.info(this.loggerId, "==> Encender");
 		this.setStatus(FuncionStatus.ON);
 		return this;
@@ -42,7 +46,10 @@ public class Funcion implements IFuncion {
 
 	@Override
 	public IFuncion apagar() {
-
+		if (!this.habilitada) {
+			MySimpleLogger.warn(this.loggerId, "==> No se puede apagar: función deshabilitada");
+			return this;
+		}
 		MySimpleLogger.info(this.loggerId, "==> Apagar");
 		this.setStatus(FuncionStatus.OFF);
 		return this;
@@ -50,7 +57,10 @@ public class Funcion implements IFuncion {
 
 	@Override
 	public IFuncion parpadear() {
-
+		if (!this.habilitada) {
+			MySimpleLogger.warn(this.loggerId, "==> No se puede parpadear: función deshabilitada");
+			return this;
+		}
 		MySimpleLogger.info(this.loggerId, "==> Parpadear");
 		this.setStatus(FuncionStatus.BLINK);
 		return this;
@@ -97,5 +107,24 @@ public class Funcion implements IFuncion {
 		return this;
 	}
 	
+	// Ejercicio 4: Capacidad habilitar/deshabilitar función
+	@Override
+	public boolean isHabilitada() {
+		return this.habilitada;
+	}
+	
+	@Override
+	public IFuncion habilitar() {
+		this.habilitada = true;
+		MySimpleLogger.info(this.loggerId, "==> Función habilitada");
+		return this;
+	}
+	
+	@Override
+	public IFuncion deshabilitar() {
+		this.habilitada = false;
+		MySimpleLogger.info(this.loggerId, "==> Función deshabilitada");
+		return this;
+	}
 	
 }

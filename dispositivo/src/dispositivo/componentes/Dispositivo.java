@@ -13,6 +13,7 @@ import dispositivo.interfaces.IFuncion;
 public class Dispositivo implements IDispositivo {
 	
 	protected String deviceId = null;
+	protected boolean habilitado = true; // Por defecto habilitado
 
 	protected Map<String, IFuncion> functions = null;
 	protected Dispositivo_RegistradorMQTT registrador = null;
@@ -101,6 +102,34 @@ public class Dispositivo implements IDispositivo {
 		return this;
 	}
 	
+	// Ejercicio 4: Capacidad habilitar/deshabilitar dispositivo
+	@Override
+	public boolean isHabilitado() {
+		return this.habilitado;
+	}
 	
+	@Override
+	public IDispositivo habilitar() {
+		this.habilitado = true;
+		// Al habilitar un dispositivo, se habilitan TODAS sus funciones
+		if (this.getFunciones() != null) {
+			for(IFuncion f : this.getFunciones()) {
+				f.habilitar();
+			}
+		}
+		return this;
+	}
+	
+	@Override
+	public IDispositivo deshabilitar() {
+		this.habilitado = false;
+		// Al deshabilitar un dispositivo, se deshabilitan TODAS sus funciones
+		if (this.getFunciones() != null) {
+			for(IFuncion f : this.getFunciones()) {
+				f.deshabilitar();
+			}
+		}
+		return this;
+	}
 	
 }

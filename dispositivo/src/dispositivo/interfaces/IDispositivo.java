@@ -12,5 +12,10 @@ public interface IDispositivo {
 	public IDispositivo addFuncion(IFuncion f);
 	public IFuncion getFuncion(String funcionId);
 	public Collection<IFuncion> getFunciones();
+	
+	// Ejercicio 4: Capacidad habilitar/deshabilitar dispositivo
+	public boolean isHabilitado();
+	public IDispositivo habilitar();
+	public IDispositivo deshabilitar();
 		
 }
