@@ -27,12 +27,22 @@ public class Dispositivo_Recurso extends Recurso {
 		
 		try {
 			jsonResult.put("id", dispositivo.getId());
+			// TODO: Añadir propiedad "habilitado" en el Ejercicio 4
+			// jsonResult.put("habilitado", dispositivo.isHabilitado());
+
 			if ( dispositivo.getFunciones() != null ) {
 				JSONArray arrayFunciones = new JSONArray();
 
+				// Serializar cada función con su estado
+				for (dispositivo.interfaces.IFuncion funcion : dispositivo.getFunciones()) {
+					JSONObject funcionJSON = new JSONObject();
+					funcionJSON.put("id", funcion.getId());
+					funcionJSON.put("estado", funcion.getStatus().name());
+					arrayFunciones.put(funcionJSON);
+				}
+
 				jsonResult.put("funciones", arrayFunciones);
 			}
-
 		} catch (JSONException e) {
 		}
 		
