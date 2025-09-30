@@ -41,6 +41,7 @@ public class Funcion implements IFuncion {
 		}
 		MySimpleLogger.info(this.loggerId, "==> Encender");
 		this.setStatus(FuncionStatus.ON);
+		
 		return this;
 	}
 
@@ -52,6 +53,7 @@ public class Funcion implements IFuncion {
 		}
 		MySimpleLogger.info(this.loggerId, "==> Apagar");
 		this.setStatus(FuncionStatus.OFF);
+		
 		return this;
 	}
 
@@ -63,6 +65,7 @@ public class Funcion implements IFuncion {
 		}
 		MySimpleLogger.info(this.loggerId, "==> Parpadear");
 		this.setStatus(FuncionStatus.BLINK);
+		
 		return this;
 	}
 	
@@ -92,8 +95,23 @@ public class Funcion implements IFuncion {
 	}
 	
 	protected IFuncion setStatus(FuncionStatus status) {
+		// Ejercicio 9: Solo publicar si el estado realmente cambió
+		boolean estadoCambio = (this.status != status);
 		this.status = status;
+		
+		// Publicar cambio de estado solo si realmente cambió
+		if (estadoCambio && this.mqttPublisher != null) {
+			this.mqttPublisher.publishStatus(this);
+		}
+		
 		return this;
+	}
+	
+	// Ejercicio 9: Referencia al publisher MQTT
+	private dispositivo.api.mqtt.FuncionPublisher_APIMQTT mqttPublisher = null;
+	
+	public void setMqttPublisher(dispositivo.api.mqtt.FuncionPublisher_APIMQTT publisher) {
+		this.mqttPublisher = publisher;
 	}
 	
 	@Override

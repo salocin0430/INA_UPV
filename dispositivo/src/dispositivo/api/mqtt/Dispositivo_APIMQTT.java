@@ -261,5 +261,25 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		return Configuracion.TOPIC_BASE + "dispositivo/" + dispositivo.getId() + "/comandos";
 	}
 	
+	// Ejercicio 9: Publisher para notificaciones push
+	private FuncionPublisher_APIMQTT funcionPublisher = null;
+	
+	/**
+	 * Publica el estado de una función usando FuncionPublisher_APIMQTT
+	 */
+	public void publishFunctionStatus(IFuncion funcion) {
+		if (funcionPublisher == null) {
+			funcionPublisher = FuncionPublisher_APIMQTT.build(this.myClient, this.dispositivo.getId());
+		}
+		funcionPublisher.publishStatus(funcion);
+	}
+	
+	/**
+	 * Obtiene el cliente MQTT para uso externo
+	 */
+	public MqttClient getMqttClient() {
+		return this.myClient;
+	}
+	
 
 }

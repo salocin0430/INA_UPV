@@ -67,6 +67,14 @@ public class Dispositivo implements IDispositivo {
 		if ( this.getFunctions() == null )
 			this.setFunctions(new HashMap<String, IFuncion>());
 		this.getFunctions().put(f.getId(), f);
+		
+		// Ejercicio 9: Configurar publisher MQTT en la función
+		if (f instanceof dispositivo.componentes.Funcion && apiFuncionesMQTT != null) {
+			dispositivo.api.mqtt.FuncionPublisher_APIMQTT publisher = 
+				dispositivo.api.mqtt.FuncionPublisher_APIMQTT.build(apiFuncionesMQTT.getMqttClient(), this.getId());
+			((dispositivo.componentes.Funcion) f).setMqttPublisher(publisher);
+		}
+		
 		return this;
 	}
 	
@@ -88,6 +96,18 @@ public class Dispositivo implements IDispositivo {
 		this.registrador.registrar();
 		this.apiFuncionesMQTT.iniciar();
 		this.apiFuncionesREST.iniciar();
+		
+		// Ejercicio 9: Configurar publisher MQTT en funciones existentes
+		if (this.getFunctions() != null) {
+			for(IFuncion f : this.getFunctions().values()) {
+				if (f instanceof dispositivo.componentes.Funcion) {
+					dispositivo.api.mqtt.FuncionPublisher_APIMQTT publisher = 
+						dispositivo.api.mqtt.FuncionPublisher_APIMQTT.build(apiFuncionesMQTT.getMqttClient(), this.getId());
+					((dispositivo.componentes.Funcion) f).setMqttPublisher(publisher);
+				}
+			}
+		}
+		
 		return this;
 	}
 
