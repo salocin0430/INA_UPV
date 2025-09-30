@@ -66,26 +66,19 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		System.out.println("-------------------------------------------------");
 		
 		// DO SOME MAGIC HERE!
-		
 		//
+
 		// Obtenemos el id de la función
+
 		//   Los topics están organizados de la siguiente manera:
+
 		//         $topic_base/dispositivo/funcion/$ID-FUNCION/commamnd
+
 		//   Donde el $topic_base es parametrizable al arrancar el dispositivo
+
 		//   y la $ID-FUNCION es el identificador de la dunción
-		
-		String[] topicNiveles = topic.split("/");
-		String funcionId = topicNiveles[topicNiveles.length-2];
-		
-		IFuncion f = this.dispositivo.getFuncion(funcionId);
-		if ( f == null ) {
-			MySimpleLogger.warn(this.loggerId, "No encontrada funcion " + funcionId);
-			return;
-		}
-		
-		
 		//
-		// Ejercicio 7: Procesar mensajes en formato JSON
+		// Ejercicio 7 y 8: Procesar mensajes en formato JSON
 		//
 
 		// Ejecutamos acción indicada en campo 'accion' del JSON recibido
@@ -98,14 +91,49 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 			return;
 		}
 		
-		if ( action.equalsIgnoreCase("encender") )
-			f.encender();
-		else if ( action.equalsIgnoreCase("apagar") )
-			f.apagar();
-		else if ( action.equalsIgnoreCase("parpadear") )
-			f.parpadear();
-		else
-			MySimpleLogger.warn(this.loggerId, "Acción '" + action + "' no reconocida. Sólo admitidas: encender, apagar o parpadear");
+		// Distinguir entre comandos de dispositivo y comandos de función
+		String[] topicNiveles = topic.split("/");
+		
+		// Verificar si es un comando de función: dispositivo/{id}/funcion/{funcion}/comandos
+		if (topicNiveles.length >= 4 && 
+			topicNiveles[topicNiveles.length-3].equals("funcion") && 
+			topicNiveles[topicNiveles.length-1].equals("comandos")) {
+			
+			// Es un comando de función
+			String funcionId = topicNiveles[topicNiveles.length-2];
+			
+			IFuncion f = this.dispositivo.getFuncion(funcionId);
+			if (f == null) {
+				MySimpleLogger.warn(this.loggerId, "No encontrada funcion " + funcionId);
+				return;
+			}
+			
+			if (action.equalsIgnoreCase("encender"))
+				f.encender();
+			else if (action.equalsIgnoreCase("apagar"))
+				f.apagar();
+			else if (action.equalsIgnoreCase("parpadear"))
+				f.parpadear();
+			else
+				MySimpleLogger.warn(this.loggerId, "Acción de función '" + action + "' no reconocida. Sólo admitidas: encender, apagar o parpadear");
+				
+		} else if (topicNiveles.length >= 3 && 
+				   topicNiveles[topicNiveles.length-1].equals("comandos") &&
+				   !topicNiveles[topicNiveles.length-2].equals("funcion")) {
+			
+			// Es un comando de dispositivo: dispositivo/{id}/comandos
+			if (action.equalsIgnoreCase("habilitar")) {
+				this.dispositivo.habilitar();
+				MySimpleLogger.info(this.loggerId, "Dispositivo habilitado via MQTT");
+			} else if (action.equalsIgnoreCase("deshabilitar")) {
+				this.dispositivo.deshabilitar();
+				MySimpleLogger.info(this.loggerId, "Dispositivo deshabilitado via MQTT");
+			} else {
+				MySimpleLogger.warn(this.loggerId, "Acción de dispositivo '" + action + "' no reconocida. Sólo admitidas: habilitar, deshabilitar");
+			}
+		} else {
+			MySimpleLogger.warn(this.loggerId, "Topic no reconocido: " + topic);
+		}
 
 		
 		
@@ -201,8 +229,12 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		if ( this.dispositivo == null )
 			return;
 		
+		// Suscribirse a comandos de funciones individuales
 		for(IFuncion f : this.dispositivo.getFunciones())
 			this.subscribe(this.calculateCommandTopic(f));
+		
+		// Ejercicio 8: Suscribirse a comandos del dispositivo
+		this.subscribe(this.calculateDeviceCommandTopic());
 
 	}
 	
@@ -222,6 +254,11 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 	
 	protected String calculateInfoTopic(IFuncion f) {
 		return Configuracion.TOPIC_BASE + "dispositivo/" + dispositivo.getId() + "/funcion/" + f.getId() + "/info";
+	}
+	
+	// Ejercicio 8: Topic para comandos del dispositivo
+	protected String calculateDeviceCommandTopic() {
+		return Configuracion.TOPIC_BASE + "dispositivo/" + dispositivo.getId() + "/comandos";
 	}
 	
 
