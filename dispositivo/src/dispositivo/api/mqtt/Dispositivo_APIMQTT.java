@@ -9,6 +9,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import dispositivo.interfaces.Configuracion;
 import dispositivo.interfaces.IDispositivo;
@@ -83,11 +85,18 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		
 		
 		//
-		// Definimos una API con mensajes de acciones básicos
+		// Ejercicio 7: Procesar mensajes en formato JSON
 		//
 
 		// Ejecutamos acción indicada en campo 'accion' del JSON recibido
-		String action = payload;
+		String action = null;
+		try {
+			JSONObject payloadJSON = new JSONObject(payload);
+			action = payloadJSON.getString("accion");
+		} catch (JSONException e) {
+			MySimpleLogger.warn(this.loggerId, "Error al parsear JSON: " + payload + ". Formato esperado: {\"accion\":\"encender\"}");
+			return;
+		}
 		
 		if ( action.equalsIgnoreCase("encender") )
 			f.encender();
@@ -96,7 +105,7 @@ public class Dispositivo_APIMQTT implements MqttCallback {
 		else if ( action.equalsIgnoreCase("parpadear") )
 			f.parpadear();
 		else
-			MySimpleLogger.warn(this.loggerId, "Acción '" + payload + "' no reconocida. Sólo admitidas: encender, apagar o parpadear");
+			MySimpleLogger.warn(this.loggerId, "Acción '" + action + "' no reconocida. Sólo admitidas: encender, apagar o parpadear");
 
 		
 		
