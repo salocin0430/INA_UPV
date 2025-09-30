@@ -72,7 +72,7 @@ public class Dispositivo_Recurso extends Recurso {
 	@Put
 	public Representation put(Representation entity) {
 
-    	// Obtenemos la función indicada como parámetro en la Ruta
+    	// Obtenemos el dispositivo
 
 		IDispositivo d = this.getDispositivo();
 		if ( d == null ) {
@@ -85,13 +85,21 @@ public class Dispositivo_Recurso extends Recurso {
 			payload = new JSONObject(entity.getText());
 			String action = payload.getString("accion");
 			
+			// Ejercicio 5: Procesar acciones de habilitar/deshabilitar dispositivo
+			if ( action.equalsIgnoreCase("habilitar") ) {
+				d.habilitar();
+			} else if ( action.equalsIgnoreCase("deshabilitar") ) {
+				d.deshabilitar();
+			} else {
+				// Acción no reconocida
+				return this.generateResponseWithErrorCode(Status.CLIENT_ERROR_BAD_REQUEST);
+			}
 
 		} catch (JSONException | IOException e) {
-			this.generateResponseWithErrorCode(Status.CLIENT_ERROR_BAD_REQUEST);
+			return this.generateResponseWithErrorCode(Status.CLIENT_ERROR_BAD_REQUEST);
 		}
 		
 		// Construimos el mensaje de respuesta
-
 		JSONObject resultJSON = Dispositivo_Recurso.serialize(d);
     	
     	this.setStatus(Status.SUCCESS_OK);
@@ -106,6 +114,7 @@ public class Dispositivo_Recurso extends Recurso {
 	public void describe() {
 		Set<Method> meths = new HashSet<Method>();
 		meths.add(Method.GET);
+		meths.add(Method.PUT);
 		meths.add(Method.OPTIONS);
 		this.getResponse().setAllowedMethods(meths);
 	}	
