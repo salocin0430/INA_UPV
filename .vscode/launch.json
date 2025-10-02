@@ -49,6 +49,53 @@
                 "20",
                 "5",
                 "3"]
+        },
+        // Ejercicio 11 - Controlador Maestro-Esclavos
+        {
+            "type": "java",
+            "name": "ControladorMaestroEsclavos",
+            "request": "launch",
+            "mainClass": "dispositivo.controlador.ControladorMaestroEsclavosIniciador",
+            "args": [
+                "tcp://tambori.dsic.upv.es:1883",
+                "ttmi050",  // Maestro
+                "ttmi051",  // Esclavo 1
+                "ttmi052"]  // Esclavo 2
+        },
+        //Maestro 
+        {
+            "type": "java",
+            "name": "Maestro",
+            "request": "launch",
+            "mainClass": "dispositivo.iniciador.DispositivoIniciador",
+            "args": [
+                "ttmi050",
+                "ttmi050.iot.upv.es",
+                8180,
+                "tcp://tambori.dsic.upv.es:1883"]
+        },
+        //Esclavos
+        {
+            "type": "java",
+            "name": "Esclavo1",
+            "request": "launch",
+            "mainClass": "dispositivo.iniciador.DispositivoIniciador",
+            "args": [
+                "ttmi051",
+                "ttmi051.iot.upv.es",
+                8181,
+                "tcp://tambori.dsic.upv.es:1883"]
+        },
+        {
+            "type": "java",
+            "name": "Esclavo2",
+            "request": "launch",
+            "mainClass": "dispositivo.iniciador.DispositivoIniciador",
+            "args": [
+                "ttmi052",
+                "ttmi052.iot.upv.es",
+                8182,
+                "tcp://tambori.dsic.upv.es:1883"]
         }
     ]
 }
