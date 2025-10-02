@@ -24,7 +24,7 @@ public class Dispositivo_Recurso extends Recurso {
 
 	public static JSONObject serialize(IDispositivo dispositivo) {
 		JSONObject jsonResult = new JSONObject();
-		
+		// Ejercicio 2: Serializar estado de la función
 		try {
 			jsonResult.put("id", dispositivo.getId());
 			jsonResult.put("habilitado", dispositivo.isHabilitado());

@@ -11,6 +11,7 @@ public class Funcion implements IFuncion {
 
 	protected FuncionStatus initialStatus = null;
 	protected FuncionStatus status = null;
+	protected boolean isInitialized = false; // Bandera para detectar inicialización
 	
 	private String loggerId = null;
 	
@@ -99,8 +100,8 @@ public class Funcion implements IFuncion {
 		boolean estadoCambio = (this.status != status);
 		this.status = status;
 		
-		// Publicar cambio de estado solo si realmente cambió
-		if (estadoCambio && this.mqttPublisher != null) {
+		// Publicar cambio de estado solo si realmente cambió Y ya está inicializado
+		if (estadoCambio && this.mqttPublisher != null && this.isInitialized) {
 			this.mqttPublisher.publishStatus(this);
 		}
 		
@@ -117,6 +118,7 @@ public class Funcion implements IFuncion {
 	@Override
 	public IFuncion iniciar() {
 		this._putIntoInitialStatus();
+		this.isInitialized = true; // Marcar como inicializada después del primer setStatus
 		return this;
 	}
 	

@@ -66,15 +66,11 @@ public class Funcion_Recurso extends Recurso {
 	@Put
 	public Representation put(Representation entity) {
 
-    	// Obtenemos la función indicada como parámetro en la Ruta
-
 		IFuncion f = this.getFuncion();
 		if ( f == null ) {
 			return this.generateResponseWithErrorCode(Status.CLIENT_ERROR_NOT_FOUND);
 		}
 
-		// Función encontrada
-		// Ejecutamos acción indicada en campo 'accion' del JSON recibido
 		JSONObject payload = null;
 		try {
 			payload = new JSONObject(entity.getText());
