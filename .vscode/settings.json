@@ -1,7 +1,9 @@
 {
     "java.project.sourcePaths": [
         "dispositivo/src",
-        "dispositivo-pi4jv2/src"
+        "dispositivo-pi4jv2/src",
+        "ControladorMaestroEsclavo-Ejericio11/src",
+        "ControladorSemaforico-Ejericio10/src"
     ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [

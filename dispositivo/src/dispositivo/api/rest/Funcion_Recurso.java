@@ -29,6 +29,7 @@ public class Funcion_Recurso extends Recurso {
 		JSONObject jsonResult = new JSONObject();
 		try {
 			jsonResult.put("id", f.getId());
+			// Ejercicio 3: Serializar estado de la función
 			jsonResult.put("estado", f.getStatus().name());
 		} catch (JSONException e) {
 		}

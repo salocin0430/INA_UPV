@@ -37,6 +37,7 @@
                 8182,
                 "tcp://mqttserver:1883"]
         },
+        // Ejercicio 10 - Controlador Semaforico
         {
             "type": "java",
             "name": "ControladorSemaforico",
